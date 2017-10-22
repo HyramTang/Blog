@@ -1,0 +1,929 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="HTTPS,SSL/TLS,IIS,Let's Encrypt," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/Favor.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="description" content="鉴于前段时间工作时解决公司对外网站安全漏洞的问题，涉及到HTTPS相关内容，特书拙文与大家分享。 背景公司使用安全软件AWVS对网站进行扫描，主要发现XSS高危漏洞问题，顺带附赠了建议您使用HTTPS加密传输的中级漏洞问题。">
+<meta name="keywords" content="HTTPS,SSL&#x2F;TLS,IIS,Let&#39;s Encrypt">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IIS配置免费SSL／TLS证书(HTTPS)">
+<meta property="og:url" content="http://blog.hyram.net/2017/03/18/2017031801/index.html">
+<meta property="og:site_name" content="海月小筑">
+<meta property="og:description" content="鉴于前段时间工作时解决公司对外网站安全漏洞的问题，涉及到HTTPS相关内容，特书拙文与大家分享。 背景公司使用安全软件AWVS对网站进行扫描，主要发现XSS高危漏洞问题，顺带附赠了建议您使用HTTPS加密传输的中级漏洞问题。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blogs.hyram.net/2017031801/201703180101.png">
+<meta property="og:image" content="http://blogs.hyram.net/2017031801/201703180102.png">
+<meta property="og:image" content="http://blogs.hyram.net/2017031801/201703180103.png">
+<meta property="og:image" content="http://blogs.hyram.net/2017031801/201703180104.png">
+<meta property="og:image" content="http://blogs.hyram.net/2017031801/201703180105.png">
+<meta property="og:image" content="http://blogs.hyram.net/2017031801/201703180106.png">
+<meta property="og:image" content="http://blogs.hyram.net/2017031801/201703180107.png">
+<meta property="og:image" content="http://blogs.hyram.net/2017031801/201703180108.png">
+<meta property="og:image" content="http://blogs.hyram.net/2017031801/201703180109.png">
+<meta property="og:image" content="http://blogs.hyram.net/2017031801/201703180110.png">
+<meta property="og:image" content="http://blogs.hyram.net/2017031801/201703180111.png">
+<meta property="og:image" content="http://blogs.hyram.net/2017031801/201703180112.png">
+<meta property="og:image" content="http://blogs.hyram.net/2017031801/201703180113.png">
+<meta property="og:image" content="http://blogs.hyram.net/2017031801/201703180114.png">
+<meta property="og:updated_time" content="2017-04-06T14:46:23.779Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="IIS配置免费SSL／TLS证书(HTTPS)">
+<meta name="twitter:description" content="鉴于前段时间工作时解决公司对外网站安全漏洞的问题，涉及到HTTPS相关内容，特书拙文与大家分享。 背景公司使用安全软件AWVS对网站进行扫描，主要发现XSS高危漏洞问题，顺带附赠了建议您使用HTTPS加密传输的中级漏洞问题。">
+<meta name="twitter:image" content="http://blogs.hyram.net/2017031801/201703180101.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 1590050,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://blog.hyram.net/2017/03/18/2017031801/"/>
+
+  <title> IIS配置免费SSL／TLS证书(HTTPS) | 海月小筑 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=56850891";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">海月小筑</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">沧海映泰岳、鱼翅烹熊掌</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-feeds">
+          <a href="/feeds" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />
+            
+            留言
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                IIS配置免费SSL／TLS证书(HTTPS)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-03-18T22:14:40+08:00" content="2017-03-18">
+              2017-03-18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/技术研究/" itemprop="url" rel="index">
+                    <span itemprop="name">技术研究</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/03/18/2017031801/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/18/2017031801/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>鉴于前段时间工作时解决公司对外网站安全漏洞的问题，涉及到HTTPS相关内容，特书拙文与大家分享。</p>
+<h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>公司使用安全软件<a href="http://www.acunetix.com/" target="_blank" rel="external">AWVS</a>对网站进行扫描，主要发现<a href="http://baike.baidu.com/item/xss/917356#viewPageContent" target="_blank" rel="external">XSS</a>高危漏洞问题，顺带附赠了建议您使用HTTPS加密传输的中级漏洞问题。</p>
+<p><img src="http://blogs.hyram.net/2017031801/201703180101.png" alt="AWVS漏洞扫描结果"></p>
+<a id="more"></a>
+<p>XSS漏洞的问题，主要出现在</p>
+<ul>
+<li>URL地址</li>
+<li>文本输入框</li>
+</ul>
+<p>解决方式网上非常多，主流方式是对URL、文本输入框进行HtmlEncode转码处理，一般找到出现问题的代码行，问题就迎刃而解了。<br>关于HTTPS问题，公司<code>主域名</code>已购买SSL/TLS证书，但出现问题的站点是主域名下的<code>二级域名</code>，起初想通过把<code>二级域名</code>的注册登录模块搬到<code>主域名</code>站点下，在<code>二级域名</code>注册登录页面使用iframe嵌入部署在<code>主域名</code>上的注册登录模块方式解决。后续考虑需要修改原来代码，界面重新调整布局，部署新站点，鉴于时间取舍问题，讨论后还是决定采用<code>二级域名</code>站点直接部署SSL/TLS证书的方式来解决。</p>
+<h2 id="HTTPS基本原理"><a href="#HTTPS基本原理" class="headerlink" title="HTTPS基本原理"></a>HTTPS基本原理</h2><p>HTTPS只是把HTTP通信接口部分使用SSL/TLS协议替换了，HTTPS对外通信时使用SSL/TLS对HTTP进行了加密处理，HTTPS实际上是披着SSL/TLS外壳的HTTP。</p>
+<p>$HTTP+加密(SSL/TLS)+认证(Certificate)+内容完整性保护=HTTPS$</p>
+<p>本文要讲的是认证服务器客户端通信双方身份，也就是使用证书进行确认双方身份，证书是由第三方<strong>可信任</strong>的企业或机构颁发的(下文会提到)。</p>
+<p>以下为客户端、服务器双方使用证书认证的过程:</p>
+<ol>
+<li>客户端向服务器发送请求告诉服务器自己支持的SSL/TLS版本、认证方式。</li>
+<li>服务器收到请求后发送认证机构颁发的公钥证书给客户端。</li>
+<li>客户端收到证书后使用预装在浏览器中认证机构的公钥进行校验证书是否合法。如合法则可以确认该服务器是可信赖的，相应的客户端浏览器地址栏会出现一把锁。</li>
+<li>……</li>
+</ol>
+<p><img src="http://blogs.hyram.net/2017031801/201703180102.png" alt="HTTPS通信建立过程 from《图解HTTP》"></p>
+<h2 id="申请免费证书"><a href="#申请免费证书" class="headerlink" title="申请免费证书"></a>申请免费证书</h2><p>前面讲了HTTPS认证双方身份是使用证书进行认证的，所以服务器需要部署证书，而这个证书需要从第三方<strong>可信任</strong>企业或机构颁发。</p>
+<p>市面上大多都是需要付费购买证书的，但也不乏加速推进互联网安全的机构，免费颁发证书，接下来要讲的就是从<a href="https://letsencrypt.org" target="_blank" rel="external">Let’s Encrypt</a>获取颁发的证书。</p>
+<p>选择一家证书颁发机构，最重要的一点就是<strong>可信任</strong>的机构，Let’s Encrypt是由 ISRG（Internet Security Research Group，互联网安全研究小组）提供服务，而 ISRG 是来自于美国加利福尼亚州的一个公益组织。Let’s Encrypt 得到了 Mozilla、Cisco、Akamai、Electronic Frontier Foundation 和 Chrome 等众多公司和机构的支持，所以从可信任角度讲，Let’s Encrypt完全值得信任。</p>
+<p>OK，了解完Let’s Encrypt后，接下来我们就进行证书申请。</p>
+<h3 id="下载工具"><a href="#下载工具" class="headerlink" title="下载工具"></a>下载工具</h3><p>Let’s Encrypt对于域名所有权的验证，支持两种方式：放临时文件进行验证、查询 whois 给域名所有人发邮件验证，由于发邮件验证较为麻烦，所以我们使用简单方便的方式—-在域名服务器中存储临时校验文件的验证方式。</p>
+<p>在Windows中有支持验证的工具—-<a href="https://github.com/Lone-Coder/letsencrypt-win-simple" target="_blank" rel="external">letsencrypt-win-simple</a> <a href="https://github.com/Lone-Coder/letsencrypt-win-simple/releases" target="_blank" rel="external">[点此下载最新版]</a> </p>
+<h3 id="获取证书"><a href="#获取证书" class="headerlink" title="获取证书"></a>获取证书</h3><p>下载工具后解压出文件夹letsencrypt-win-simple.V1.9.3，<code>Shift</code>+<code>鼠标右键</code>选择<code>在此处打开命令窗口</code>进入DOS：</p>
+<ol>
+<li><p>输入<code>letsencrypt.exe</code><br>第一次运行会让你输入你的邮箱以收取自动续订失败的信息(letsencrypt支持自动续订功能)。<img src="http://blogs.hyram.net/2017031801/201703180103.png" alt=""></p>
+</li>
+<li><p>因为后续我们需要手动在IIS上配置证书，所以选择<code>M</code>，接着会让你输入域名、站点目录等信息，需要提前设置MIME类型，详情请参见<a href="#setMIME">添加MIME类型</a>：<img src="http://blogs.hyram.net/2017031801/201703180104.png" alt=""></p>
+</li>
+<li>如果验证成功后则会出现如下提示，如果出现错误请参见<a href="#tips">Tips</a>：<img src="http://blogs.hyram.net/2017031801/201703180105.png" alt=""></li>
+<li>此时证书已经下载到本地，打开路径<code>C:\Users\[UserName]\AppData\Roaming\letsencrypt-win-simple\httpsacme-v01.api.letsencrypt.org</code>可以查看<img src="http://blogs.hyram.net/2017031801/201703180106.png" alt=""></li>
+</ol>
+<h2 id="IIS配置证书"><a href="#IIS配置证书" class="headerlink" title="IIS配置证书"></a>IIS配置证书</h2><p>以上已经通过<code>letsencrypt-win-simple</code>工具申请了证书，接下来就是对IIS站点配置证书了(简单4步搞定)：</p>
+<p><img src="http://blogs.hyram.net/2017031801/201703180107.png" alt=""></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>至此我们就完成了对IIS进行配置HTTPS的任务，如果一切进行顺利的话，打开浏览器输入配置的站点地址，地址栏则会出现如图中的<code>小绿锁</code>(各浏览器展现方式不尽相同)：<img src="http://blogs.hyram.net/2017031801/201703180108.png" alt=""></p>
+<p>使用Let’s Encrypt对IIS配置完证书后，觉得非常方便快速获取证书，其Let’s Encrypt背后支持的组织机构也非常强大，但是美中不足的地方还是有两点：</p>
+<ul>
+<li>颁发的证书有效期为3个月，到期后需要续约(免费)</li>
+<li>不支持泛域名，如：<code>*.hyram.net</code></li>
+</ul>
+<p>证书有效期3个月对于个人域名用户来说是恰到好处的，毕竟个人域名所有权变动非常频繁，但是对于时间要求比较长久或者普通企业用户来说就非常不便了，也不乏有些比较懒的用户—-比如笔者，也非常不方便，况且笔者尊崇<code>能重复的事情，就让机器去做，最好是一劳永逸</code>，庆幸的是letsencrypt-win-simple支持自动续签，详情请见本文Tips中的<a href="#autoRenew">自动续订</a>。</p>
+<p>对于不支持泛域名，例如：你申请了<code>www.hyram.net</code>域名的证书，如果访问<code>blog.hyram.net</code>则无法使用证书(默认会变成HTTP，如果使用HTTPS则会报证书错误)，问题的解决方法是设置域名地址重定向，具体使用方法可参考IIS插件：<a href="https://technet.microsoft.com/zh-cn/library/ee215194(v=ws.10" target="_blank" rel="external">URL重写模块</a>.aspx)。</p>
+<h2 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips<span id="tips"></span></h2><h3 id="※注意※"><a href="#※注意※" class="headerlink" title="※注意※"></a>※注意※</h3><h4 id="添加MIME类型"><a href="#添加MIME类型" class="headerlink" title="添加MIME类型"></a>添加MIME类型<span id="setMIME"></span></h4><p>使用<code>letsencrypt-win-simple</code>工具申请证书时有可能会出现如图错误：<img src="http://blogs.hyram.net/2017031801/201703180109.png" alt=""></p>
+<p>原因是因为<code>letsencrypt-win-simple</code>申请证书时，工具会通过访问<code>.well-known</code>文件夹下的<code>校验码</code>文件验证此域名是否属于你：<img src="http://blogs.hyram.net/2017031801/201703180110.png" alt=""></p>
+<p>但<code>.well-known</code>文件夹包含<code>.</code>字符，IIS会认为这是不可识别的MIME类型，所以需要在站点MIME类型设置中增加<code>.</code>类型(<strong>申请完证书后记得删除</strong>)：<img src="http://blogs.hyram.net/2017031801/201703180111.png" alt=""></p>
+<h4 id="校验的文件路径必须和域名指向的站点路径一致"><a href="#校验的文件路径必须和域名指向的站点路径一致" class="headerlink" title="校验的文件路径必须和域名指向的站点路径一致"></a>校验的文件路径必须和域名指向的站点路径一致</h4><p>笔者在此被坑过，所以特地填坑。因为一个站点会由多个应用程序或虚拟目录构成，所以填写的站点路径不能填写应用程序或虚拟目录的路径，需要填写DNS解析域名站点的根目录地址，如：我的域名DNS解析到主机的站点根路径是<code>C:\inetpub\wwwroot</code>，则设置此路径以供存储<code>.well-known</code>文件内容：<img src="http://blogs.hyram.net/2017031801/201703180112.png" alt=""></p>
+<h3 id="自动续订"><a href="#自动续订" class="headerlink" title="自动续订"></a>自动续订<span id="autoRenew"></span></h3><p>证书申请成功后会出现两条提示信息，一条<code>是否开启Widnows计划任务</code>，我选择了<code>Yes</code>，第二条<code>是否指定特定用户开启计划任务</code>，我选择了<code>No</code>，如图：<img src="http://blogs.hyram.net/2017031801/201703180113.png" alt=""></p>
+<p>以上选择后还需要对Windows任务计划进行配置才能生效，打开任务计划页面找到letsencrypt-win-simple任务计划进行如图配置即可：<img src="http://blogs.hyram.net/2017031801/201703180114.png" alt=""></p>
+<p>更多自动续订信息请参考：<br><a href="https://weblog.west-wind.com/posts/2016/feb/22/using-lets-encrypt-with-iis-on-windows" target="_blank" rel="external">Using Let’s Encrypt with IIS on Windows</a><br><a href="https://superuser.com/questions/1043761/managing-letsencrypt-certificate-expiration-and-auto-renewals" target="_blank" rel="external">Managing LetsEncrypt Certificate expiration and auto-renewals</a></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/HTTPS/" rel="tag">#HTTPS</a>
+          
+            <a href="/tags/SSL-TLS/" rel="tag">#SSL/TLS</a>
+          
+            <a href="/tags/IIS/" rel="tag">#IIS</a>
+          
+            <a href="/tags/Let-s-Encrypt/" rel="tag">#Let's Encrypt</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/06/06/my-new-post/" rel="next" title="搭建Hexo后编写的测试文章">
+                <i class="fa fa-chevron-left"></i> 搭建Hexo后编写的测试文章
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2017/03/18/2017031801/"
+     data-title="IIS配置免费SSL／TLS证书(HTTPS)"
+     data-content=""
+     data-url="http://blog.hyram.net/2017/03/18/2017031801/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/18/2017031801/"
+           data-title="IIS配置免费SSL／TLS证书(HTTPS)" data-url="http://blog.hyram.net/2017/03/18/2017031801/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Hyram" />
+          <p class="site-author-name" itemprop="name">Hyram</p>
+          <p class="site-description motion-element" itemprop="description">Stay hungry、Stay foolish</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">3</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTPS基本原理"><span class="nav-number">2.</span> <span class="nav-text">HTTPS基本原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#申请免费证书"><span class="nav-number">3.</span> <span class="nav-text">申请免费证书</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#下载工具"><span class="nav-number">3.1.</span> <span class="nav-text">下载工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取证书"><span class="nav-number">3.2.</span> <span class="nav-text">获取证书</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IIS配置证书"><span class="nav-number">4.</span> <span class="nav-text">IIS配置证书</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">5.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tips"><span class="nav-number">6.</span> <span class="nav-text">Tips</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#※注意※"><span class="nav-number">6.1.</span> <span class="nav-text">※注意※</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#添加MIME类型"><span class="nav-number">6.1.1.</span> <span class="nav-text">添加MIME类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#校验的文件路径必须和域名指向的站点路径一致"><span class="nav-number">6.1.2.</span> <span class="nav-text">校验的文件路径必须和域名指向的站点路径一致</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#自动续订"><span class="nav-number">6.2.</span> <span class="nav-text">自动续订</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hyram</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"hyram"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+      
+      <script src="//cdn.jsdelivr.net/ua-parser.js/0.7.10/ua-parser.min.js"></script>
+      <script src="/js/src/hook-duoshuo.js"></script>
+    
+  
+
+
+
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+</body>
+</html>
