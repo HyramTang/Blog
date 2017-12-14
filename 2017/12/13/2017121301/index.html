@@ -1,0 +1,918 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+  <link href="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.min.css" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.lug.ustc.edu.cn/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+  
+
+<link href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="分页,基础,性能," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/images/Favor.ico?v=5.0.1" />
+
+
+
+
+
+
+<meta name="keywords" content="分页,基础,性能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="从0到1实现分页功能 - 01">
+<meta property="og:url" content="http://blog.hyram.net/2017/12/13/2017121301/index.html">
+<meta property="og:site_name" content="海月小筑">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://blogs.hyram.net/2017121301/201712130101.png">
+<meta property="og:image" content="http://blogs.hyram.net/2017121301/201712130102.png">
+<meta property="og:image" content="http://blogs.hyram.net/2017121301/201712130103.png">
+<meta property="og:image" content="http://blogs.hyram.net/2017121301/201712130104.gif">
+<meta property="og:image" content="http://blogs.hyram.net/2017121301/201712130105.png">
+<meta property="og:image" content="http://blogs.hyram.net/2017121301/201712130106.png">
+<meta property="og:image" content="http://blogs.hyram.net/2017121301/201712130107.gif">
+<meta property="og:image" content="http://blogs.hyram.net/2017121301/201712130108.gif">
+<meta property="og:updated_time" content="2017-12-14T15:07:40.612Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="从0到1实现分页功能 - 01">
+<meta name="twitter:image" content="http://blogs.hyram.net/2017121301/201712130101.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Pisces',
+    sidebar: {"position":"right","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: 1590050,
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://blog.hyram.net/2017/12/13/2017121301/"/>
+
+  <title> 从0到1实现分页功能 - 01 | 海月小筑 </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=56850891";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-right page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">海月小筑</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">沧海映泰岳、鱼翅烹熊掌</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-feeds">
+          <a href="/feeds" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-book"></i> <br />
+            
+            留言
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="#" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  <div class="popup">
+ <span class="search-icon fa fa-search"></span>
+ <input type="text" id="local-search-input">
+ <div id="local-search-result"></div>
+ <span class="popup-btn-close">close</span>
+</div>
+
+
+    </div>
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                从0到1实现分页功能 - 01
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2017-12-13T23:18:03+08:00" content="2017-12-13">
+              2017-12-13
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/技术研究/" itemprop="url" rel="index">
+                    <span itemprop="name">技术研究</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2017/12/13/2017121301/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/12/13/2017121301/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><img src="http://blogs.hyram.net/2017121301/201712130101.png" alt=""></p>
+<a id="more"></a>
+<h3 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h3><p>前段时间，某项目为了页面效果展示更漂亮，UI方面增加了以卡片形式展现数据的方式。先前Table展现的方式，分页的特性是基于JS控件自带的功能。我本着有轮子就不要重复造轮子的原则，第一时间就是在Github上找带分页功能可扩展性的卡片式UI JS库，奈何找了许久没有找到合适的。最后就决定自己写咯，简单的JS操作HTML代码，分页的话用了<a href="https://github.com/mricle/Mricode.Pagination" target="_blank" rel="external">Mricode.Pagination</a> JS库，用的过程遇到些坑，差点弃用，后来跟同事探讨后，在他帮助下把这个库调好了，最后也把这个库顺利的用起来了，得感谢老司机啊。</p>
+<p>使用<code>Mricode.Pagination</code>库时遇到的都是些小问题，在此也不详细赘述啦，本文的主题是讲分页功能的实现，咱不跑题。</p>
+<p>使用<code>Mricode.Pagination</code>库遇到坑时几度想自己写分页实现，但当时总找不到头绪，没完整了解其原理，实在是无从下手。后面调好<code>Mricode.Pagination</code>库后，又是草草收场，实现项目其它功能去了。</p>
+<p>至此，分页功能就一直是我心头病，决定花时间弄明白它的前后端原理，所以就有了此文。</p>
+<h3 id="我们为什么要分页？"><a href="#我们为什么要分页？" class="headerlink" title="我们为什么要分页？"></a>我们为什么要分页？</h3><p>首先，我们先搞清楚一个问题“我们为什么要分页？”，我相信大家也都是知道：减少网络带宽，减少内存使用，减轻服务器压力，提高数据查询速度，提高用户体验度。一个数据量比较大的系统或功能块，我相信都少不了分页的存在。虽然分页也会增加系统复杂度，但和前面利相比，瑕不掩瑜。</p>
+<h3 id="分页的原理"><a href="#分页的原理" class="headerlink" title="分页的原理"></a>分页的原理</h3><p>现有两种分页方式，一种是前端分页，另一种是后台数据库分页。</p>
+<h4 id="前端分页"><a href="#前端分页" class="headerlink" title="前端分页"></a>前端分页</h4><p>前端发起查询数据请求到服务器，服务器从数据库查询出前端所请求查询的所有数据，然后在服务器/客户端进行分页处理，最后传输数据至客户端浏览器呈现。</p>
+<h4 id="数据库分页"><a href="#数据库分页" class="headerlink" title="数据库分页"></a>数据库分页</h4><p>顾名思义，只在数据库查询数据片段，数据片段即每页的数据。例如：前端发起查询第2页的20条数据的请求到服务器，服务器根据查询条件从数据库查询数据，即查询从2×20开始、2×20+20结束的数据，数据库查询出结果后再把数据交给服务器，最后传输数据至客户端浏览器呈现。</p>
+<h4 id="分页的基本参数"><a href="#分页的基本参数" class="headerlink" title="分页的基本参数"></a>分页的基本参数</h4><ol>
+<li><code>当前页码</code>：<em>pageIndex</em></li>
+<li><code>数据总数</code>：<em>totalCount</em></li>
+<li><code>总页数</code>：<em>pageTotal</em></li>
+<li><code>每页显示数据</code>：<em>pageSize</em></li>
+</ol>
+<p>其中totalCount和pageSize本文暂时用不到，后面数据库分页获取数据片段时会用到，具体后面讲。pageIndex即选中的第几页码，pageTotal即总页码数，都很好理解。</p>
+<p>前端和数据库分页两种方式孰优孰劣，主要根据自己的需求和使用场景而定夺。本文采用的是数据库分页的方式，来实现一个简单的前后端分页功能。</p>
+<h3 id="分页前端实现思路"><a href="#分页前端实现思路" class="headerlink" title="分页前端实现思路"></a>分页前端实现思路</h3><p>我们现在来看看<code>Mricode.Pagination</code>的实现，然后理出思路，最后根据Boostrap Pagination的样式理出我们自己的分页前端实现思路。</p>
+<h4 id="Mricode-Pagination分页插件参考"><a href="#Mricode-Pagination分页插件参考" class="headerlink" title="Mricode.Pagination分页插件参考"></a><a href="https://github.com/mricle/Mricode.Pagination" target="_blank" rel="external">Mricode.Pagination</a>分页插件参考</h4><p>第一步我们还是先来看看，<code>Mricode.Pagination</code>这个插件是如何实现分页功能的。</p>
+<p><img src="http://blogs.hyram.net/2017121301/201712130102.png" alt="Mricode.Pagination 图"></p>
+<p>我们先查看页面的HTML代码，我们发现每个页码的a标签里都带了个data-page-index属性，属性值即是页码数，选中的页码给了active样式。</p>
+<p><img src="http://blogs.hyram.net/2017121301/201712130103.png" alt="Mricode.Pagination HTML代码图"></p>
+<p>我们再来看页码<code>5</code>点击后HTML代码会发生什么</p>
+<p><img src="http://blogs.hyram.net/2017121301/201712130104.gif" alt="Mricode.Pagination 页码点击动图"></p>
+<p>可以看到div id=”page”下的的HTML代码被更新了，其中5页码给了active样式更新为选中状态。不难理解，页码每次点击的时候重新更新了页码序号，并且更新了页码的选中状态。</p>
+<h4 id="Mricode-Pagination的实现思路"><a href="#Mricode-Pagination的实现思路" class="headerlink" title="Mricode.Pagination的实现思路"></a>Mricode.Pagination的实现思路</h4><p>从<code>Mricode.Pagination</code>插件中我们可以理出这个分页思路，首先页面加载后，分页呈现了最开始的页码，即1234，并且在每个页码标签上存入页码数值，当触发点击事件时，触发的事件完成两件事：</p>
+<ol>
+<li>重新生成页码HTML代码</li>
+<li>切换页码选中状态</li>
+</ol>
+<p>需要注意的是：<strong>每次</strong>点击页码时都会触发事件完成这两件事！</p>
+<h4 id="Bootstrap-Pagination的实现思路"><a href="#Bootstrap-Pagination的实现思路" class="headerlink" title="Bootstrap Pagination的实现思路"></a><a href="http://v3.bootcss.com/components/#pagination" target="_blank" rel="external">Bootstrap Pagination</a>的实现思路</h4><p>我们先看下Bootstrap的分页样式，如图：</p>
+<p><img src="http://blogs.hyram.net/2017121301/201712130105.png" alt="Bootstrap 分页样式图"></p>
+<p>我们可以看到，分页由<code>《</code>上一页、下一页<code>》</code>符号和中间5个页码组成，其中还有选中状态的当前页码。</p>
+<p>上文提到每次<code>Mricode.Pagination</code>每次点击页码时，都会重新生成HTML代码，所以我们可以根据Bootstrap Pagination的基本样式得出我们分页生成的代码内容，即：</p>
+<ul>
+<li>第01页：<code>《 [1] 2 3 4 5 》</code></li>
+<li>第02页：<code>《 1 [2] 3 4 5 》</code></li>
+<li>第03页：<code>《……》</code></li>
+<li>第04页：<code>《 2 3 [4] 5 6 》</code></li>
+<li>第NN页：<code>《……》</code></li>
+<li>第08页：<code>《 6 7 [8] 9 10 》</code></li>
+<li>第09页：<code>《 6 7 8 [9] 10 》</code></li>
+<li>第10页：<code>《 6 7 8 9 [10] 》</code></li>
+</ul>
+<h3 id="简单实现"><a href="#简单实现" class="headerlink" title="简单实现"></a>简单实现</h3><p>原理和思路讲完了，那我们就开始写代码简单实现分页功能吧！</p>
+<p>根据上文提到的分页生成的代码内容，实现代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> pageTotal = <span class="number">10</span>;<span class="comment">//总页数</span></div><div class="line"><span class="keyword">for</span> (<span class="keyword">var</span> pageIndex = <span class="number">1</span>; pageIndex &lt;= pageTotal; pageIndex++) &#123;</div><div class="line">  <span class="keyword">var</span> str = <span class="string">""</span>;</div><div class="line">  <span class="keyword">var</span> pre = <span class="string">"《"</span>,<span class="comment">//上一页</span></div><div class="line">      next = <span class="string">"》"</span>;<span class="comment">//下一页</span></div><div class="line">  <span class="keyword">var</span> startPageIndex = <span class="number">0</span>,<span class="comment">//起始页码</span></div><div class="line">      endPageIndex = <span class="number">0</span>;<span class="comment">//结束页码</span></div><div class="line"></div><div class="line">  <span class="keyword">if</span> (pageIndex &lt; <span class="number">3</span>) &#123;<span class="comment">//页码小于3时</span></div><div class="line">    startPageIndex = <span class="number">1</span>;</div><div class="line">    endPageIndex = <span class="number">5</span>;</div><div class="line">  &#125; <span class="keyword">else</span> <span class="keyword">if</span> (pageIndex &gt; pageTotal - <span class="number">3</span>) &#123;<span class="comment">//页码大于7时</span></div><div class="line">    startPageIndex = pageTotal - <span class="number">4</span>;</div><div class="line">    endPageIndex = pageTotal;</div><div class="line">  &#125; <span class="keyword">else</span> &#123;<span class="comment">//其它页码</span></div><div class="line">    startPageIndex = pageIndex - <span class="number">2</span>;</div><div class="line">    endPageIndex = pageIndex + <span class="number">2</span>;</div><div class="line">  &#125;</div><div class="line"></div><div class="line">  <span class="comment">//生成页码</span></div><div class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = startPageIndex ; i &lt;= endPageIndex; i++) &#123;</div><div class="line">    str += i == pageIndex ? <span class="string">"["</span> + i + <span class="string">"] "</span> : i + <span class="string">" "</span>;</div><div class="line">  &#125;</div><div class="line">  str = pre + str + next;</div><div class="line">  <span class="built_in">console</span>.info(str);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>执行结果：</p>
+<p><img src="http://blogs.hyram.net/2017121301/201712130106.png" alt="代码执行结果1"></p>
+<p>此案例我们是根据Bootstrap Pagination默认每次只显示5个页码数编写的，后文都以每次显示5个页码编写案例。</p>
+<p>观察生成分页的代码，我们可以发现生成的页码有两种特殊情况：</p>
+<ol>
+<li><p><strong>pageIndex</strong>小于3时</p>
+<p>当<strong>pageIndex</strong>小于3时，页码都是在显示的5个页码的左边。</p>
+</li>
+<li><p><strong>pageIndex</strong>大于7(pageTotal-3)时</p>
+<p>同理<strong>pageIndex</strong>大于7时，页码都是在显示的5个页码的右边。</p>
+</li>
+</ol>
+<p>所以我们生成这两种情况的页码时需要进行单独判断。</p>
+<h4 id="加上UI样式和事件"><a href="#加上UI样式和事件" class="headerlink" title="加上UI样式和事件"></a>加上UI样式和事件</h4><blockquote>
+<p>运行代码需要引用jQuery和Bootstrap</p>
+</blockquote>
+<p>现在我们根据上文的代码，加上Bootstrap的样式和点击页码事件：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div></pre></td><td class="code"><pre><div class="line">&lt;script&gt;</div><div class="line">    <span class="comment">//总页数</span></div><div class="line">    <span class="keyword">var</span> pageTotal = <span class="number">10</span>;</div><div class="line">    $(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="comment">//页面加载后，默认显示第1页</span></div><div class="line">        $(<span class="string">"#page"</span>).append(showPages(<span class="number">1</span>, pageTotal))</div><div class="line">    &#125;)</div><div class="line"></div><div class="line">    <span class="comment">//生成分页HTML代码</span></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">showPages</span>(<span class="params">pageIndex, pageTotal</span>) </span>&#123;</div><div class="line">        <span class="keyword">var</span> str = <span class="string">""</span>,</div><div class="line">            prePageIndex = (pageIndex - <span class="number">1</span>) &lt;= <span class="number">0</span> ? pageTotal : (pageIndex - <span class="number">1</span>),</div><div class="line">            nexPageIndex = (pageIndex + <span class="number">1</span>) &gt; pageTotal ? <span class="number">1</span> : (pageIndex + <span class="number">1</span>),</div><div class="line">            pre = <span class="string">'&lt;li&gt;&lt;a href="javascript:changePage('</span> + prePageIndex + <span class="string">')" aria-label="Previous"&gt;&lt;span aria-hidden="true"&gt;&amp;laquo;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;'</span>,<span class="comment">//上一页</span></div><div class="line">            next = <span class="string">'&lt;li&gt;&lt;a href="javascript:changePage('</span> + nexPageIndex + <span class="string">')" aria-label="Previous"&gt;&lt;span aria-hidden="true"&gt;&amp;raquo;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;'</span>,<span class="comment">//下一页 </span></div><div class="line">            startPageIndex = <span class="number">0</span>,<span class="comment">//起始页码</span></div><div class="line">            endPageIndex = <span class="number">0</span>;<span class="comment">//结束页码</span></div><div class="line"></div><div class="line">        <span class="keyword">if</span> (pageIndex &lt; <span class="number">3</span>) &#123;<span class="comment">//页码小于3时</span></div><div class="line">            startPageIndex = <span class="number">1</span>;</div><div class="line">            endPageIndex = <span class="number">5</span>;</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (pageIndex &gt; pageTotal - <span class="number">3</span>) &#123;<span class="comment">//页码大于7时</span></div><div class="line">            startPageIndex = pageTotal - <span class="number">4</span>;</div><div class="line">            endPageIndex = pageTotal;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;<span class="comment">//其它情况</span></div><div class="line">            startPageIndex = pageIndex - <span class="number">2</span>;</div><div class="line">            endPageIndex = pageIndex + <span class="number">2</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">//生成页码</span></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> i = startPageIndex ; i &lt;= endPageIndex; i++) &#123;</div><div class="line">            str += <span class="string">'&lt;li class=\"'</span> + (i == pageIndex ? <span class="string">'active'</span> : <span class="string">''</span>) + <span class="string">'\"&gt;&lt;a href="javascript:changePage('</span> + i + <span class="string">')"&gt;'</span> + i + <span class="string">'&lt;/a&gt;&lt;/li&gt;'</span>;</div><div class="line">        &#125;</div><div class="line">        str = pre + str + next;</div><div class="line"></div><div class="line">        <span class="keyword">return</span> <span class="string">'&lt;ul class="pagination"&gt;'</span> + str + <span class="string">'&lt;/ul&gt;'</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="comment">//页数点击事件</span></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">changePage</span>(<span class="params">i</span>) </span>&#123;</div><div class="line">        $(<span class="string">"#page"</span>).html(<span class="string">''</span>);</div><div class="line">        $(<span class="string">"#page"</span>).append(showPages(i, pageTotal))</div><div class="line">    &#125;</div><div class="line">&lt;<span class="regexp">/script&gt;</span></div><div class="line"><span class="regexp"></span></div><div class="line"><span class="regexp">&lt;div class="container-fluid" style="margin-left:15px"&gt;</span></div><div class="line"><span class="regexp">    &lt;h3&gt;Bootstrap分页样式(无事件)&lt;/</span>h3&gt;</div><div class="line">    &lt;ul <span class="class"><span class="keyword">class</span></span>=<span class="string">"pagination"</span>&gt;</div><div class="line">        &lt;li&gt;</div><div class="line">            &lt;a href=<span class="string">"#"</span> aria-label=<span class="string">"Previous"</span>&gt;</div><div class="line">                &lt;span aria-hidden=<span class="string">"true"</span>&gt;&amp;laquo;&lt;/span&gt;</div><div class="line">            &lt;<span class="regexp">/a&gt;</span></div><div class="line"><span class="regexp">        &lt;/</span>li&gt;</div><div class="line">        &lt;li&gt;&lt;a href="#"&gt;1&lt;/a&gt;&lt;/li&gt;</div><div class="line">        &lt;li&gt;&lt;a href="#"&gt;2&lt;/a&gt;&lt;/li&gt;</div><div class="line">        &lt;li <span class="class"><span class="keyword">class</span></span>=<span class="string">"active"</span>&gt;&lt;a href="#"&gt;3&lt;/a&gt;&lt;/li&gt;</div><div class="line">        &lt;li&gt;&lt;a href="#"&gt;4&lt;/a&gt;&lt;/li&gt;</div><div class="line">        &lt;li&gt;&lt;a href="#"&gt;5&lt;/a&gt;&lt;/li&gt;</div><div class="line">        &lt;li&gt;</div><div class="line">            &lt;a href=<span class="string">"#"</span> aria-label=<span class="string">"Next"</span>&gt;</div><div class="line">                &lt;span aria-hidden=<span class="string">"true"</span>&gt;&amp;raquo;&lt;/span&gt;</div><div class="line">            &lt;<span class="regexp">/a&gt;</span></div><div class="line"><span class="regexp">        &lt;/</span>li&gt;</div><div class="line">    &lt;<span class="regexp">/ul&gt;</span></div><div class="line"><span class="regexp"></span></div><div class="line"><span class="regexp">    &lt;h3&gt;简单前端分页效果：&lt;/</span>h3&gt;</div><div class="line">    &lt;div id=<span class="string">"page"</span>&gt;&lt;/div&gt;</div><div class="line">&lt;<span class="regexp">/div&gt;</span></div></pre></td></tr></table></figure>
+<p>执行结果：</p>
+<p><img src="http://blogs.hyram.net/2017121301/201712130107.gif" alt="代码执行结果2"></p>
+<p>这里需要注意的是，我们对<code>第一页</code>和<code>最后一页</code>点击上下页时进行了处理，当页码为<code>第一页</code> 时单击<code>《</code>上一页，跳到<code>最后一页</code>；当页码为<code>最后一页</code>时单击<code>》</code>下一页，跳到<code>第一页</code>。</p>
+<h4 id="简单封装"><a href="#简单封装" class="headerlink" title="简单封装"></a>简单封装</h4><p>为方便使用，我们现在将生成分页的JS代码进行闭包封装：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> Paging = (<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">    <span class="keyword">var</span> pageContent = <span class="function"><span class="keyword">function</span> (<span class="params">pageIndex, pageTotal</span>) </span>&#123;</div><div class="line">        <span class="comment">//生成分页HTML样式代码</span></div><div class="line">        <span class="keyword">var</span> str = <span class="string">""</span>,</div><div class="line">            prePageIndex = (pageIndex - <span class="number">1</span>) &lt;= <span class="number">0</span> ? pageTotal : (pageIndex - <span class="number">1</span>),</div><div class="line">            nexPageIndex = (pageIndex + <span class="number">1</span>) &gt; pageTotal ? <span class="number">1</span> : (pageIndex + <span class="number">1</span>),</div><div class="line">            pre = <span class="string">'&lt;li&gt;&lt;a href="javascript:changePage('</span> + prePageIndex + <span class="string">')" aria-label="Previous"&gt;&lt;span aria-hidden="true"&gt;&amp;laquo;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;'</span>,<span class="comment">//上一页</span></div><div class="line">            next = <span class="string">'&lt;li&gt;&lt;a href="javascript:changePage('</span> + nexPageIndex + <span class="string">')" aria-label="Previous"&gt;&lt;span aria-hidden="true"&gt;&amp;raquo;&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;'</span>,<span class="comment">//下一页</span></div><div class="line">            startPageIndex = <span class="number">0</span>,<span class="comment">//起始页码</span></div><div class="line">            endPageIndex = <span class="number">0</span>;<span class="comment">//结束页码</span></div><div class="line"></div><div class="line">        <span class="keyword">if</span> (pageIndex &lt; <span class="number">3</span>) &#123;<span class="comment">//页码小于3时</span></div><div class="line">            startPageIndex = <span class="number">1</span>;</div><div class="line">            endPageIndex = <span class="number">5</span>;</div><div class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (pageIndex &gt; pageTotal - <span class="number">3</span>) &#123;<span class="comment">//页码大于7时</span></div><div class="line">            startPageIndex = pageTotal - <span class="number">4</span>;</div><div class="line">            endPageIndex = pageTotal;</div><div class="line">        &#125; <span class="keyword">else</span> &#123;<span class="comment">//其它情况</span></div><div class="line">            startPageIndex = pageIndex - <span class="number">2</span>;</div><div class="line">            endPageIndex = pageIndex + <span class="number">2</span>;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        <span class="comment">//生成页码</span></div><div class="line">        <span class="keyword">for</span> (<span class="keyword">var</span> i = startPageIndex ; i &lt;= endPageIndex; i++) &#123;</div><div class="line">            str += <span class="string">'&lt;li class=\"'</span> + (i == pageIndex ? <span class="string">'active'</span> : <span class="string">''</span>) + <span class="string">'\"&gt;&lt;a href="javascript:changePage('</span> + i + <span class="string">')"&gt;'</span> + i + <span class="string">'&lt;/a&gt;&lt;/li&gt;'</span>;</div><div class="line">        &#125;</div><div class="line">        str = pre + str + next;</div><div class="line">        <span class="keyword">return</span> <span class="string">'&lt;ul class="pagination"&gt;'</span> + str + <span class="string">'&lt;/ul&gt;'</span>;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> pageContent;</div><div class="line">&#125;)();</div><div class="line"></div><div class="line"><span class="comment">//调用</span></div><div class="line">Paging(pageIndex,pageTotal)</div></pre></td></tr></table></figure>
+<h4 id="动态显示每页内容"><a href="#动态显示每页内容" class="headerlink" title="动态显示每页内容"></a>动态显示每页内容</h4><p>最后我们使用封装好的JS，编写一个动态显示每页内容的效果：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">&lt;script&gt;</div><div class="line">    <span class="comment">//总页数</span></div><div class="line">    <span class="keyword">var</span> pageTotal = <span class="number">10</span>;</div><div class="line">    $(<span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</div><div class="line">        <span class="comment">//显示第几页，总页数</span></div><div class="line">        $(<span class="string">"#page"</span>).append(Paging(<span class="number">1</span>, pageTotal))</div><div class="line">    &#125;)</div><div class="line"></div><div class="line">    <span class="comment">//页数点击事件</span></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">changePage</span>(<span class="params">pageIndex</span>) </span>&#123;</div><div class="line">        $(<span class="string">"blockquote p"</span>).text(<span class="string">"This is page "</span> + pageIndex);</div><div class="line">        $(<span class="string">"#page"</span>).html(<span class="string">''</span>);</div><div class="line">        $(<span class="string">"#page"</span>).append(Paging(pageIndex, pageTotal))</div><div class="line">    &#125;</div><div class="line">&lt;<span class="regexp">/script&gt;</span></div><div class="line"><span class="regexp"></span></div><div class="line"><span class="regexp">&lt;div class="container-fluid" style="margin-left:15px"&gt;</span></div><div class="line"><span class="regexp">    &lt;h3&gt;动态显示每页内容：&lt;/</span>h3&gt;</div><div class="line"></div><div class="line">    &lt;blockquote style=<span class="string">"margin-bottom:0px"</span>&gt;</div><div class="line">        &lt;p&gt;This is page <span class="number">1</span>&lt;<span class="regexp">/p&gt;</span></div><div class="line"><span class="regexp">    &lt;/</span>blockquote&gt;</div><div class="line">    &lt;div id=<span class="string">"page"</span>&gt;&lt;/div&gt;</div><div class="line">&lt;<span class="regexp">/div&gt;</span></div></pre></td></tr></table></figure>
+<p>执行结果：</p>
+<p><img src="http://blogs.hyram.net/2017121301/201712130108.gif" alt="代码执行效果3"></p>
+<p>从效果可以看到我们每次点击页码时，页码上面的数字都会发生变化，因为每次点击页码时都会重新生成上面文字块区域，本文在最后提到动态显示每页内容是为了给下一篇分页的文章做铺垫。</p>
+<p>下一篇文章我们会使用后台(.NET)获取数据，再传输到前端页面进行展示。</p>
+<blockquote>
+<p>非常感谢您的阅读，希望对您有帮助！</p>
+</blockquote>
+
+      
+    </div>
+
+    <div>
+      
+        
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/分页/" rel="tag">#分页</a>
+          
+            <a href="/tags/基础/" rel="tag">#基础</a>
+          
+            <a href="/tags/性能/" rel="tag">#性能</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/18/2017031801/" rel="next" title="IIS配置免费SSL／TLS证书(HTTPS)">
+                <i class="fa fa-chevron-left"></i> IIS配置免费SSL／TLS证书(HTTPS)
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        <div class="ds-share flat" data-thread-key="2017/12/13/2017121301/"
+     data-title="从0到1实现分页功能 - 01"
+     data-content=""
+     data-url="http://blog.hyram.net/2017/12/13/2017121301/">
+  <div class="ds-share-inline">
+    <ul  class="ds-share-icons-16">
+
+      <li data-toggle="ds-share-icons-more"><a class="ds-more" href="javascript:void(0);">分享到：</a></li>
+      <li><a class="ds-weibo" href="javascript:void(0);" data-service="weibo">微博</a></li>
+      <li><a class="ds-qzone" href="javascript:void(0);" data-service="qzone">QQ空间</a></li>
+      <li><a class="ds-qqt" href="javascript:void(0);" data-service="qqt">腾讯微博</a></li>
+      <li><a class="ds-wechat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+
+    </ul>
+    <div class="ds-share-icons-more">
+    </div>
+  </div>
+</div>
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/12/13/2017121301/"
+           data-title="从0到1实现分页功能 - 01" data-url="http://blog.hyram.net/2017/12/13/2017121301/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Hyram" />
+          <p class="site-author-name" itemprop="name">Hyram</p>
+          <p class="site-description motion-element" itemprop="description">Stay hungry、Stay foolish</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">4</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#背景"><span class="nav-number">1.</span> <span class="nav-text">背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#我们为什么要分页？"><span class="nav-number">2.</span> <span class="nav-text">我们为什么要分页？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分页的原理"><span class="nav-number">3.</span> <span class="nav-text">分页的原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#前端分页"><span class="nav-number">3.1.</span> <span class="nav-text">前端分页</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#数据库分页"><span class="nav-number">3.2.</span> <span class="nav-text">数据库分页</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分页的基本参数"><span class="nav-number">3.3.</span> <span class="nav-text">分页的基本参数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分页前端实现思路"><span class="nav-number">4.</span> <span class="nav-text">分页前端实现思路</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Mricode-Pagination分页插件参考"><span class="nav-number">4.1.</span> <span class="nav-text">Mricode.Pagination分页插件参考</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Mricode-Pagination的实现思路"><span class="nav-number">4.2.</span> <span class="nav-text">Mricode.Pagination的实现思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Bootstrap-Pagination的实现思路"><span class="nav-number">4.3.</span> <span class="nav-text">Bootstrap Pagination的实现思路</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单实现"><span class="nav-number">5.</span> <span class="nav-text">简单实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#加上UI样式和事件"><span class="nav-number">5.1.</span> <span class="nav-text">加上UI样式和事件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#简单封装"><span class="nav-number">5.2.</span> <span class="nav-text">简单封装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#动态显示每页内容"><span class="nav-number">5.3.</span> <span class="nav-text">动态显示每页内容</span></a></li></ol></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2015 - 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Hyram</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/2.1.3/jquery.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fastclick/1.0.6/fastclick.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/jquery.lazyload/1.9.3/jquery.lazyload.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/velocity/1.2.3/velocity.ui.min.js"></script>
+
+  
+  <script type="text/javascript" src="//cdn.jsdelivr.net/fancybox/2.1.5/jquery.fancybox.pack.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.1"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.0.1"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.0.1"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.1"></script>
+
+
+
+  
+
+
+
+  
+  
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length == 0) {
+       search_path = "search.xml";
+    }
+    var path = "/" + search_path;
+    // monitor main search box;
+
+    function proceedsearch() {
+      $("body").append('<div class="popoverlay">').css('overflow', 'hidden');
+      $('.popup').toggle();
+
+    }
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+    'use strict';
+    $.ajax({
+        url: path,
+        dataType: "xml",
+        async: true,
+        success: function( xmlResponse ) {
+            // get the contents from search data
+            isfetched = true;
+            $('.popup').detach().appendTo('.header-inner');
+            var datas = $( "entry", xmlResponse ).map(function() {
+                return {
+                    title: $( "title", this ).text(),
+                    content: $("content",this).text(),
+                    url: $( "url" , this).text()
+                };
+            }).get();
+            var $input = document.getElementById(search_id);
+            var $resultContent = document.getElementById(content_id);
+            $input.addEventListener('input', function(){
+                var matchcounts = 0;
+                var str='<ul class=\"search-result-list\">';                
+                var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
+                $resultContent.innerHTML = "";
+                if (this.value.trim().length > 1) {
+                // perform local searching
+                datas.forEach(function(data) {
+                    var isMatch = true;
+                    var content_index = [];
+                    var data_title = data.title.trim().toLowerCase();
+                    var data_content = data.content.trim().replace(/<[^>]+>/g,"").toLowerCase();
+                    var data_url = data.url;
+                    var index_title = -1;
+                    var index_content = -1;
+                    var first_occur = -1;
+                    // only match artiles with not empty titles and contents
+                    if(data_title != '' && data_content != '') {
+                        keywords.forEach(function(keyword, i) {
+                            index_title = data_title.indexOf(keyword);
+                            index_content = data_content.indexOf(keyword);
+                            if( index_title < 0 && index_content < 0 ){
+                                isMatch = false;
+                            } else {
+                                if (index_content < 0) {
+                                    index_content = 0;
+                                }
+                                if (i == 0) {
+                                    first_occur = index_content;
+                                }
+                            }
+                        });
+                    }
+                    // show search results
+                    if (isMatch) {
+                        matchcounts += 1;
+                        str += "<li><a href='"+ data_url +"' class='search-result-title'>"+ data_title +"</a>";
+                        var content = data.content.trim().replace(/<[^>]+>/g,"");
+                        if (first_occur >= 0) {
+                            // cut out 100 characters
+                            var start = first_occur - 20;
+                            var end = first_occur + 80;
+                            if(start < 0){
+                                start = 0;
+                            }
+                            if(start == 0){
+                                end = 50;
+                            }
+                            if(end > content.length){
+                                end = content.length;
+                            }
+                            var match_content = content.substring(start, end);
+                            // highlight all keywords
+                            keywords.forEach(function(keyword){
+                                var regS = new RegExp(keyword, "gi");
+                                match_content = match_content.replace(regS, "<b class=\"search-keyword\">"+keyword+"</b>");
+                            });
+                            
+                            str += "<p class=\"search-result\">" + match_content +"...</p>"
+                        }
+                        str += "</li>";
+                    }
+                })};
+                str += "</ul>";
+                if (matchcounts == 0) { str = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>' }
+                if (keywords == "") { str = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>' }
+                $resultContent.innerHTML = str;
+            });
+            proceedsearch();
+        }
+    });}
+
+    // handle and trigger popup window;
+    $('.popup-trigger').mousedown(function(e) {
+      e.stopPropagation();
+      if (isfetched == false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+
+    });
+
+    $('.popup-btn-close').click(function(e){
+      $('.popup').hide();
+      $(".popoverlay").remove();
+      $('body').css('overflow', '');
+    });
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+  </script>
+
+  
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+  
+
+  
+
+</body>
+</html>
