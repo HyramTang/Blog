@@ -3,13 +3,14 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
+title: 海月小筑
 subtitle: ''
-description: ''
+description: '沧海映泰岳、鱼翅烹熊掌'
 keywords:
-author: John Doe
-language: en
-timezone: ''
+author: Hyram Tang
+language: zh-CN
+email: hyram.tang@gmail.com
+timezone: Asia/Hong_Kong
 
 # URL
 ## Set your site url here. For example, if you use GitHub Page, set url as 'https://username.github.io/project'
@@ -97,9 +98,24 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+theme: cactus
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: ''
+
+# Comments
+## Utterances: https://utteranc.es/
+# utteranc:
+#   enabled: true
+#   repo: owner/githubrepo
+#   issue_term: pathname
+#   label: utteranc
+#   theme: themename
+
+# Social media links
+social_links:
+  github: https://github.com/hyramtang
+  twitter: https://twitter.com/HyramTang
+  weibo: https://weibo.com/u/5242898070
