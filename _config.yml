@@ -4,10 +4,10 @@
 
 # Site
 title: 海月小筑
-subtitle: ''
-description: '沧海映泰岳、鱼翅烹熊掌'
+subtitle: '沧海映泰岳、鱼翅烹熊掌'
+# description: '沧海映泰岳、鱼翅烹熊掌'
 keywords:
-author: Hyram Tang
+author: Hyram
 language: zh-CN
 email: hyram.tang@gmail.com
 timezone: Asia/Hong_Kong
@@ -45,16 +45,16 @@ post_asset_folder: false
 relative_link: false
 future: true
 highlight:
-  enable: true
-  line_number: true
+  enable: false #set it to false
+  line_number: false
   auto_detect: false
   tab_replace: ''
-  wrap: true
+  wrap: false #false
   hljs: false
 prismjs:
-  enable: false
+  enable: true #set it to true
   preprocess: true
-  line_number: true
+  line_number: false #optional
   tab_replace: ''
 
 # Home page setting
@@ -98,7 +98,7 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: cactus
+theme: minima
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
